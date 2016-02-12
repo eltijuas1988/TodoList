@@ -1,37 +1,47 @@
+require 'date'
 # Story: As a developer, I can create a ToDoItem.
 
 class Todo_item # Tasks
 
-# Story: As a developer, I can give a ToDoItem a title and retrieve it.
-
+  # Story: As a developer, I can give a ToDoItem a title and retrieve it.
   def initialize(title, description)
     @title = title
     @description = description
     @done = false
+    @due_date
   end
 
-# Story: As a developer, I can print a ToDoItem with field labels and values.
-
+  # Story: As a developer, I can print a ToDoItem with field labels and values.
   def title
     "Title: " + @title
   end
 
-# Story: As a developer, I can give a ToDoItem a description and retrieve it.
-
+  # Story: As a developer, I can give a ToDoItem a description and retrieve it.
   def description
     "Description: " + @description
   end
 
-# Story: As a developer, I can mark a ToDoItem done.
+  # Story: As a developer, I can mark a ToDoItem done.
 
-# Story: As a developer, when I print a ToDoItem is done status is shown.
-
+  # Story: As a developer, when I print a ToDoItem is done status is shown.
   def completed
     @done = true
   end
 
   def is_complete?
     @done
+  end
+
+  #Story: As a developer, I can create a to do item with a due date, which can be changed.
+  # Hint: Use the Date class
+
+  #Story: As a developer, I can print an item with a due date with field labels and values.
+  def assign_due_date(year, month, day)
+    @due_date = Date.new(year, month, day)
+  end
+
+  def edit_due_date(year, month, day)
+    @due_date = Date.new(year, month, day)
   end
 
 end
@@ -70,6 +80,8 @@ class Todo_list
       end
     }
   end
+
+
 
 
 

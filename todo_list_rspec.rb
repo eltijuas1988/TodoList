@@ -6,7 +6,6 @@ require_relative 'todo_list'
 describe 'Todo_item' do
 
   it "creates a new item" do
-    # "groceries" is the title - it is a parameter that the class needs to initialize with
     list_item = Todo_item.new("x", "y")
     expect{list_item}.to_not raise_error
   end
@@ -44,6 +43,24 @@ describe 'Todo_item' do
     expect{list_item.completed}.to_not raise_error
     expect(list_item.completed).to eq true
   end
+
+  #Story: As a developer, I can create a to do item with a due date, which can be changed.
+  # Hint: Use the Date class
+
+  #Story: As a developer, I can print an item with a due date with field labels and values.
+  it "creates a todo_item with a due date" do
+    list_item = Todo_item.new("groceries", "Go handle several errands")
+    expect{list_item.assign_due_date(2016, 2, 28)}.to_not raise_error
+    expect(list_item.assign_due_date(2016, 2, 28)).to be_an_instance_of Date
+  end
+
+  it "can change the date of a todo_item" do
+    list_item = Todo_item.new("groceries", "Go handle several errands")
+    list_item.assign_due_date(2016, 2, 28)
+    expect{list_item.edit_due_date(2016, 3, 1)}.to_not raise_error
+    expect(list_item.edit_due_date(2016, 3, 1).to_s).to include "2016-03-01"
+  end
+
 
 end
 
@@ -84,6 +101,8 @@ describe 'Todo_list' do
     expect(tasks.incomplete).to eq [list_item1, list_item2]
   end
 
+  #Story: As a developer, I can create a to do item with a due date, which can be changed.
+  # Hint: Use the Date class
 
 
 
