@@ -26,13 +26,13 @@ describe 'Todo_item' do
   it "will print field labels and values for title" do
     list_item = Todo_item.new("groceries", "Go handle errands")
     expect{list_item.title}.to_not raise_error
-    expect(list_item.title).to eq "Title: groceries"
+    expect(list_item.print).to include "Title: groceries"
   end
 
   it "will print field labels and values for description" do
     list_item = Todo_item.new("groceries", "Go handle errands")
     expect{list_item.description}.to_not raise_error
-    expect(list_item.description).to eq "Description: Go handle errands"
+    expect(list_item.print).to include "Description: Go handle errands"
   end
 
   # Story: As a developer, I can mark a ToDoItem done.
@@ -56,8 +56,11 @@ describe 'Due_Item' do
 
   #Story: As a developer, I can print an item with a due date with field labels and values.
   it "creates a todo_item with a due date" do
-    list_item = Due_Item.new("groceries", "go handle errands")
-    expect{list_item.due_date(2016, 02, 12)}.to_not raise_error
+    date = Date.parse(Date.today.to_s)
+    list_item2 = Due_Item.new("groceries", "go handle errands")
+    expect{list_item2.due_date(date.year, date.mon, date.mday)}.to_not raise_error
+
+    expect(list_item2.print).to include Date.today.to_s
   end
 
   it "can change the date of a todo_item" do
@@ -139,8 +142,10 @@ describe 'Todo_list' do
     list_item1 = Todo_item.new("groceries", "Go handle errands")
     list_item2 = Due_Item.new("workout", "hit the gym")
     list_item3 = Due_Item.new("help", "hit the gym")
-    list_item2.due_date(2016, 02, 12)
-    list_item3.due_date(2016, 02, 12)
+
+    date = Date.parse(Date.today.to_s)
+    list_item2.due_date(date.year, date.mon, date.mday)
+    list_item3.due_date(date.year, date.mon, date.mday)
     tasks = Todo_list.new
 
     tasks.add_new_item(list_item1)
@@ -158,6 +163,65 @@ describe 'Todo_list' do
     expect(tasks.items_due_today.length).to eq 1
 
   end
+
+  # Story: As a developer with a ToDoList, I can list all the not completed items in order of due date.
+  it "lists incomplete todo items in order of due date" do
+    list_item1 = Due_Item.new("groceries", "Go handle errands")
+    list_item2 = Due_Item.new("workout", "hit the gym")
+    list_item3 = Due_Item.new("help", "hit the gym")
+    list_item4 = Due_Item.new("clean house", "get cleaning supplies")
+
+
+    date = Date.parse(Date.today.to_s)
+    list_item1.due_date(date.year, date.mon, date.mday)
+    list_item2.due_date(date.year, date.mon, date.mday + 1)
+    list_item3.due_date(date.year, date.mon, date.mday + 2)
+    list_item4.due_date(date.year, date.mon, date.mday + 3)
+    tasks = Todo_list.new
+
+    expect(list_item1.is_complete?).to eq false
+    expect(list_item2.is_complete?).to eq false
+    expect(list_item3.is_complete?).to eq false
+    expect(list_item4.is_complete?).to eq false
+
+    tasks.add_new_item(list_item1)
+    tasks.add_new_item(list_item2)
+    tasks.add_new_item(list_item3)
+    tasks.add_new_item(list_item4)
+
+    expect{tasks.items_due_today}.to_not raise_error
+    expect(tasks.see_all_items.length).to eq 4
+    expect(tasks.items_with_due_dates.length).to eq 4
+
+    expect(tasks.items_due_today.length).to eq 1
+  end
+
+  # Story: As a developer with a ToDoList with and without due dates, I can show all the not completed items in order of due date, and then the items without due dates.
+  it "gives back a list with the due items in order followed by the items without due dates" do
+    list_item1 = Due_Item.new("groceries", "Go handle errands")
+    list_item2 = Due_Item.new("workout", "hit the gym")
+    list_item3 = Todo_item.new("help", "hit the gym")
+    list_item4 = Todo_item.new("clean house", "get cleaning supplies")
+
+    date = Date.parse(Date.today.to_s)
+    list_item1.due_date(date.year, date.mon, date.mday)
+    list_item2.due_date(date.year, date.mon, date.mday + 1)
+
+    tasks = Todo_list.new
+
+    tasks.add_new_item(list_item4)
+    tasks.add_new_item(list_item2)
+    tasks.add_new_item(list_item3)
+    tasks.add_new_item(list_item1)
+
+    expect{tasks.final_list}.to_not raise_error
+
+    expect(tasks.final_list[0].title).to eq "groceries"
+    expect(tasks.final_list[1].title).to eq "workout"
+    expect(tasks.final_list[2].title).to eq "clean house"
+
+  end
+
 
 
 end
